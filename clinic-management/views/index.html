@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clinic Management System</title>
-    <link href="/public/css/styles.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -12,7 +12,12 @@
     <div class="flex h-screen">
         <!-- Sidebar -->
         <div class="w-64 bg-blue-800 text-white p-4">
-            <h1 class="text-2xl font-bold mb-8">Clinic Admin</h1>
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">Clinic Admin</h1>
+                <button id="logoutBtn" class="text-white hover:text-blue-200">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
             <nav>
                 <ul>
                     <li class="mb-4">
@@ -48,7 +53,7 @@
         <div class="flex-1 p-8">
             <div class="mb-8">
                 <h2 class="text-3xl font-bold text-gray-800">Dashboard Overview</h2>
-                <p class="text-gray-600">Welcome to your clinic management system</p>
+                <p class="text-gray-600">Welcome, <span id="usernameDisplay"></span></p>
             </div>
 
             <!-- Stats Cards -->
@@ -127,5 +132,24 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Check if user is logged in
+        fetch('/api/auth/check')
+            .then(response => response.json())
+            .then(data => {
+                if (data.loggedIn) {
+                    document.getElementById('usernameDisplay').textContent = data.user.username;
+                } else {
+                    window.location.href = '/login';
+                }
+            });
+
+        // Logout button
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            fetch('/api/auth/logout', { method: 'POST' })
+                .then(() => window.location.href = '/login');
+        });
+    </script>
 </body>
 </html>
